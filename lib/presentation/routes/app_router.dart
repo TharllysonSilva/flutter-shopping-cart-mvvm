@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shopping_cart_mvvm/presentation/products/view/products_screen.dart';
 
 class AppRouter {
   static const products = '/products';
@@ -9,7 +10,7 @@ class AppRouter {
     switch (settings.name) {
       case products:
         return MaterialPageRoute(
-          builder: (_) => const Placeholder(),
+          builder: (_) => const ProductsScreen(),
         );
       case cart:
         return MaterialPageRoute(
