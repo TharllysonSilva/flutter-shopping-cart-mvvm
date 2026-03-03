@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../core/result/result.dart';
 import '../dto/product_dto.dart';
 import '../mappers/product_mapper.dart';
-import '../../domain/entities/product.dart';
+import '../../domain/product.dart';
 
 class ProductsApi {
   final _client = http.Client();
