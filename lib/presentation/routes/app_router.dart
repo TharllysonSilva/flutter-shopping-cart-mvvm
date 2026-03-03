@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shopping_cart_mvvm/presentation/products/view/cart_screen.dart';
 import 'package:flutter_shopping_cart_mvvm/presentation/products/view/products_screen.dart';
+import 'package:flutter_shopping_cart_mvvm/presentation/products/viewmodel/checkout_success_screen.dart';
 
 class AppRouter {
   static const products = '/products';
@@ -19,7 +20,7 @@ class AppRouter {
         );
       case checkoutSuccess:
         return MaterialPageRoute(
-          builder: (_) => const Placeholder(),
+          builder: (_) => const CheckoutSuccessScreen(),
         );
       default:
         return null;
