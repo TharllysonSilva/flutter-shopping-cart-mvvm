@@ -1,4 +1,4 @@
-import '../../domain/product.dart';
+import '../../domain/entities/product.dart';
 import '../dto/product_dto.dart';
 
 class ProductMapper {

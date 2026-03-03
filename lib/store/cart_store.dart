@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_shopping_cart_mvvm/domain/product.dart';
+import 'package:flutter_shopping_cart_mvvm/domain/entities/product.dart';
 import '../domain/entities/cart.dart';
 import '../domain/entities/cart_item.dart';
 
