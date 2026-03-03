@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shopping_cart_mvvm/domain/entities/product.dart';
+import 'package:flutter_shopping_cart_mvvm/presentation/products/viewmodel/cart_viewmodel.dart';
 
 import 'package:flutter_shopping_cart_mvvm/presentation/products/viewmodel/products_viewmodel.dart';
 import 'package:flutter_shopping_cart_mvvm/data/services/products_api.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_shopping_cart_mvvm/core/result/result.dart';
 import 'package:flutter_shopping_cart_mvvm/presentation/widgets/cart_badge_icon.dart';
 import 'package:flutter_shopping_cart_mvvm/store/cart_store.dart';
 import 'package:flutter_shopping_cart_mvvm/presentation/routes/app_router.dart';
+import 'package:provider/provider.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -27,7 +29,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cartStore = context.watch<CartStore>();
+    final cartStore = Provider.of<CartStore>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -81,10 +83,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 }
 
-extension on BuildContext {
-  watch<T>() {}
-}
-
 class _ProductTile extends StatelessWidget {
   final Product product;
   final CartStore cartStore;
@@ -131,7 +129,7 @@ class _ProductTile extends StatelessWidget {
             cartItem == null
                 ? ElevatedButton(
                     onPressed: () {
-                      cartStore.addProduct(product);
+                      context.read<CartViewModel>().add(product);
                     },
                     child: const Text("Adicionar"),
                   )
@@ -139,7 +137,7 @@ class _ProductTile extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          cartStore.removeProduct(product.id);
+                          context.read<CartViewModel>().remove(product.id);
                         },
                         icon: const Icon(Icons.remove_circle_outline),
                       ),
@@ -151,7 +149,7 @@ class _ProductTile extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          cartStore.addProduct(product);
+                          context.read<CartViewModel>().add(product);
                         },
                         icon: const Icon(Icons.add_circle_outline),
                       ),
