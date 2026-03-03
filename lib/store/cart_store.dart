@@ -68,4 +68,39 @@ class CartStore extends ChangeNotifier {
     _cart = const Cart(items: []);
     notifyListeners();
   }
+
+  void addProductFromCart(CartItem item) {
+    if (_cart.isFinalized) return;
+
+    final index = _cart.items.indexWhere(
+      (i) => i.productId == item.productId,
+    );
+
+    final updatedItems = List<CartItem>.from(_cart.items);
+
+    updatedItems[index] = item.copyWith(quantity: item.quantity + 1);
+
+    _cart = Cart(items: updatedItems);
+    notifyListeners();
+  }
+
+  void decreaseQuantity(int productId) {
+    if (_cart.isFinalized) return;
+
+    final index = _cart.items.indexWhere((i) => i.productId == productId);
+
+    if (index == -1) return;
+
+    final updatedItems = List<CartItem>.from(_cart.items);
+    final item = updatedItems[index];
+
+    if (item.quantity > 1) {
+      updatedItems[index] = item.copyWith(quantity: item.quantity - 1);
+    } else {
+      updatedItems.removeAt(index);
+    }
+
+    _cart = Cart(items: updatedItems);
+    notifyListeners();
+  }
 }
