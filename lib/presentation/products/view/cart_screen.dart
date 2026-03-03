@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shopping_cart_mvvm/presentation/products/viewmodel/checkout_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_shopping_cart_mvvm/store/cart_store.dart';
-import 'package:flutter_shopping_cart_mvvm/presentation/routes/app_router.dart';
+import '../../../core/result/result.dart';
+import '../../../store/cart_store.dart';
+import '../viewmodel/cart_viewmodel.dart';
+import '../../routes/app_router.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final cartStore = context.watch<CartStore>();
-    final cart = cartStore.cart;
+    final store = context.watch<CartStore>();
+    final cartVm = context.watch<CartViewModel>();
+    final checkoutVm = context.watch<CheckoutViewModel>();
+    final cart = store.cart;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Carrinho"),
-      ),
-      body: cart.items.isEmpty
-          ? const Center(
-              child: Text("Seu carrinho está vazio"),
-            )
-          : Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
+      appBar: AppBar(title: const Text("Carrinho")),
+      body: Column(
+        children: [
+          // Feedback de operações (cart ops + checkout)
+          _OperationFeedback(cartVm: cartVm, checkoutVm: checkoutVm),
+
+          Expanded(
+            child: cart.items.isEmpty
+                ? const Center(child: Text("Seu carrinho está vazio"))
+                : ListView.builder(
                     itemCount: cart.items.length,
                     itemBuilder: (_, index) {
                       final item = cart.items[index];
@@ -35,22 +39,15 @@ class CartScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(12),
                           child: Row(
                             children: [
-                              Image.network(
-                                item.image,
-                                width: 60,
-                                height: 60,
-                              ),
+                              Image.network(item.image, width: 60, height: 60),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      item.title,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    Text(item.title,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis),
                                     const SizedBox(height: 4),
                                     Text(
                                       "R\$ ${item.unitPrice.toStringAsFixed(2)}",
@@ -59,18 +56,17 @@ class CartScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
-                                      "Subtotal: R\$ ${item.subtotal.toStringAsFixed(2)}",
-                                    ),
+                                        "Subtotal: R\$ ${item.subtotal.toStringAsFixed(2)}"),
                                   ],
                                 ),
                               ),
                               Column(
                                 children: [
                                   IconButton(
-                                    onPressed: cart.isFinalized
+                                    onPressed: store.isFinalized
                                         ? null
-                                        : () => cartStore
-                                            .addProductFromCart(item),
+                                        : () =>
+                                            cartVm.increment(item.productId),
                                     icon: const Icon(Icons.add_circle),
                                   ),
                                   Text(
@@ -79,20 +75,18 @@ class CartScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   IconButton(
-                                    onPressed: cart.isFinalized
+                                    onPressed: store.isFinalized
                                         ? null
-                                        : () => cartStore
-                                            .decreaseQuantity(item.productId),
-                                    icon:
-                                        const Icon(Icons.remove_circle),
+                                        : () =>
+                                            cartVm.decrement(item.productId),
+                                    icon: const Icon(Icons.remove_circle),
                                   ),
                                 ],
                               ),
                               IconButton(
-                                onPressed: cart.isFinalized
+                                onPressed: store.isFinalized
                                     ? null
-                                    : () => cartStore
-                                        .removeProduct(item.productId),
+                                    : () => cartVm.remove(item.productId),
                                 icon: const Icon(Icons.delete),
                               ),
                             ],
@@ -101,19 +95,94 @@ class CartScreen extends StatelessWidget {
                       );
                     },
                   ),
-                ),
-                _CartSummary(),
-              ],
-            ),
+          ),
+
+          _CartSummaryAndCheckoutButton(checkoutVm: checkoutVm),
+        ],
+      ),
     );
   }
 }
 
-class _CartSummary extends StatelessWidget {
+class _OperationFeedback extends StatelessWidget {
+  final CartViewModel cartVm;
+  final CheckoutViewModel checkoutVm;
+
+  const _OperationFeedback({
+    required this.cartVm,
+    required this.checkoutVm,
+  });
+
   @override
   Widget build(BuildContext context) {
-    final cartStore = context.watch<CartStore>();
-    final cart = cartStore.cart;
+    return Column(
+      children: [
+        AnimatedBuilder(
+          animation: cartVm.cartOperationCommand,
+          builder: (_, __) {
+            final cmd = cartVm.cartOperationCommand;
+            final result = cmd.result;
+
+            if (cmd.isExecuting) {
+              return const LinearProgressIndicator();
+            }
+
+            if (result is Failure) {
+              return _ErrorBanner(message: result.error ?? "Erro no carrinho");
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+        AnimatedBuilder(
+          animation: checkoutVm.checkoutCommand,
+          builder: (_, __) {
+            final cmd = checkoutVm.checkoutCommand;
+            final result = cmd.result;
+
+            if (cmd.isExecuting) {
+              return const LinearProgressIndicator();
+            }
+
+            if (result is Failure) {
+              return _ErrorBanner(message: result.error ?? "Erro no checkout");
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _ErrorBanner extends StatelessWidget {
+  final String message;
+
+  const _ErrorBanner({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      color: Colors.red.withOpacity(0.1),
+      child: Text(message),
+    );
+  }
+}
+
+class _CartSummaryAndCheckoutButton extends StatelessWidget {
+  final CheckoutViewModel checkoutVm;
+
+  const _CartSummaryAndCheckoutButton({
+    required this.checkoutVm,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final store = context.watch<CartStore>();
+    final cart = store.cart;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -128,20 +197,23 @@ class _CartSummary extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             "Subtotal: R\$ ${cart.subtotal.toStringAsFixed(2)}",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 12),
           ElevatedButton(
-            onPressed: cart.items.isEmpty || cart.isFinalized
+            onPressed: cart.items.isEmpty || store.isFinalized
                 ? null
-                : () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRouter.checkoutSuccess,
-                    );
+                : () async {
+                    await checkoutVm.checkout();
+
+                    final result = checkoutVm.checkoutCommand.result;
+                    if (result is Success) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        AppRouter.checkoutSuccess,
+                        (_) => false,
+                      );
+                    }
                   },
             child: const Text("Finalizar pedido"),
           ),
