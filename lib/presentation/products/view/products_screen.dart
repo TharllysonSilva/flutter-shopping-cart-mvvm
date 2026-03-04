@@ -12,12 +12,14 @@ import 'package:provider/provider.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
+
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
   late final ProductsViewModel viewModel;
+
   @override
   void initState() {
     super.initState();
@@ -28,9 +30,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final cartStore = context.watch<CartStore>();
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Produtos"),
+        title: const Text('Produtos'),
         actions: [
           IconButton(
             onPressed: () {
@@ -43,14 +46,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
       ),
       body: AnimatedBuilder(
         animation: viewModel.loadProductsCommand,
-        builder: (_, __) {
+        builder: (context, _) {
           final command = viewModel.loadProductsCommand;
+
           if (command.isExecuting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
+
           final result = command.result;
+
           if (result is Failure) {
             return Center(
               child: Column(
@@ -68,12 +72,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ),
             );
           }
+
           if (result is Success<List<Product>>) {
             final products = result.data ?? [];
+
             return ListView.builder(
               itemCount: products.length,
               itemBuilder: (_, index) {
                 final product = products[index];
+
                 return _ProductTile(
                   product: product,
                   cartStore: cartStore,
@@ -81,6 +88,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               },
             );
           }
+
           return const SizedBox.shrink();
         },
       ),
@@ -91,15 +99,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
 class _ProductTile extends StatelessWidget {
   final Product product;
   final CartStore cartStore;
+
   const _ProductTile({
     required this.product,
     required this.cartStore,
   });
+
   @override
   Widget build(BuildContext context) {
     final cartItem = cartStore.cart.items
         .where((item) => item.productId == product.id)
         .firstOrNull;
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Padding(
@@ -108,6 +119,7 @@ class _ProductTile extends StatelessWidget {
           children: [
             Image.network(product.image, width: 60, height: 60),
             const SizedBox(width: 12),
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,34 +137,40 @@ class _ProductTile extends StatelessWidget {
                 ],
               ),
             ),
+
             const SizedBox(width: 12),
-            cartItem == null
-                ? ElevatedButton(
+
+            /// PRODUTO AINDA NÃO NO CARRINHO
+            if (cartItem == null)
+              ElevatedButton(
+                onPressed: () {
+                  context.read<CartViewModel>().add(product);
+                },
+                child: const Text("Adicionar"),
+              )
+
+            /// PRODUTO JÁ NO CARRINHO
+            else
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      context.read<CartViewModel>().decrement(product.id);
+                    },
+                    icon: const Icon(Icons.remove_circle_outline),
+                  ),
+                  Text(
+                    cartItem.quantity.toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
                     onPressed: () {
                       context.read<CartViewModel>().add(product);
                     },
-                    child: const Text("Adicionar"),
-                  )
-                : Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          context.read<CartViewModel>().remove(product.id);
-                        },
-                        icon: const Icon(Icons.remove_circle_outline),
-                      ),
-                      Text(
-                        cartItem.quantity.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          context.read<CartViewModel>().add(product);
-                        },
-                        icon: const Icon(Icons.add_circle_outline),
-                      ),
-                    ],
+                    icon: const Icon(Icons.add_circle_outline),
                   ),
+                ],
+              ),
           ],
         ),
       ),
