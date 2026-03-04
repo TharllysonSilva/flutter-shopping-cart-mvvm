@@ -22,9 +22,7 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Carrinho")),
       body: Column(
         children: [
-          /// Feedback visual das operações (CartApi + CheckoutApi)
           _OperationFeedback(cartVm: cartVm, checkoutVm: checkoutVm),
-
           Expanded(
             child: cart.items.isEmpty
                 ? const Center(child: Text("Seu carrinho está vazio"))
@@ -46,7 +44,6 @@ class CartScreen extends StatelessWidget {
                                 height: 60,
                               ),
                               const SizedBox(width: 12),
-
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,8 +66,6 @@ class CartScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-
-                              /// Controles de quantidade
                               Column(
                                 children: [
                                   IconButton(
@@ -94,8 +89,6 @@ class CartScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-
-                              /// Remover item
                               IconButton(
                                 onPressed: store.isFinalized
                                     ? null
@@ -109,8 +102,6 @@ class CartScreen extends StatelessWidget {
                     },
                   ),
           ),
-
-          /// Resumo + botão de checkout
           _CartSummaryAndCheckoutButton(checkoutVm: checkoutVm),
         ],
       ),
@@ -131,7 +122,6 @@ class _OperationFeedback extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        /// Feedback das operações do carrinho
         AnimatedBuilder(
           animation: cartVm.cartOperationCommand,
           builder: (_, __) {
@@ -156,8 +146,6 @@ class _OperationFeedback extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
-
-        /// Feedback do checkout
         AnimatedBuilder(
           animation: checkoutVm.checkoutCommand,
           builder: (_, __) {
