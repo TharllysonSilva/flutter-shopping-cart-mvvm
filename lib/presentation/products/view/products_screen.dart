@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shopping_cart_mvvm/domain/entities/product.dart';
 import 'package:flutter_shopping_cart_mvvm/presentation/products/viewmodel/cart_viewmodel.dart';
-
 import 'package:flutter_shopping_cart_mvvm/presentation/products/viewmodel/products_viewmodel.dart';
 import 'package:flutter_shopping_cart_mvvm/data/services/products_api.dart';
 import 'package:flutter_shopping_cart_mvvm/core/result/result.dart';
 import 'package:flutter_shopping_cart_mvvm/presentation/widgets/cart_badge_icon.dart';
+import 'package:flutter_shopping_cart_mvvm/presentation/widgets/error_banner.dart';
 import 'package:flutter_shopping_cart_mvvm/store/cart_store.dart';
 import 'package:flutter_shopping_cart_mvvm/presentation/routes/app_router.dart';
 import 'package:provider/provider.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
-
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
   late final ProductsViewModel viewModel;
-
   @override
   void initState() {
     super.initState();
@@ -29,11 +27,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cartStore = Provider.of<CartStore>(context);
-
+    final cartStore = context.watch<CartStore>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Produtos'),
+        title: const Text("Produtos"),
         actions: [
           IconButton(
             onPressed: () {
@@ -46,24 +43,33 @@ class _ProductsScreenState extends State<ProductsScreen> {
       ),
       body: AnimatedBuilder(
         animation: viewModel.loadProductsCommand,
-        builder: (context, _) {
+        builder: (_, __) {
           final command = viewModel.loadProductsCommand;
-
           if (command.isExecuting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final result = command.result;
-
-          if (result is Failure) {
-            return Center(
-              child: Text(result?.error ?? "Erro ao carregar produtos"),
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }
-
+          final result = command.result;
+          if (result is Failure) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ErrorBanner(
+                    message: result?.error ?? "Erro ao carregar produtos",
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: viewModel.loadProducts,
+                    child: const Text("Tentar novamente"),
+                  ),
+                ],
+              ),
+            );
+          }
           if (result is Success<List<Product>>) {
             final products = result.data ?? [];
-
             return ListView.builder(
               itemCount: products.length,
               itemBuilder: (_, index) {
@@ -75,7 +81,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
               },
             );
           }
-
           return const SizedBox.shrink();
         },
       ),
@@ -86,18 +91,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
 class _ProductTile extends StatelessWidget {
   final Product product;
   final CartStore cartStore;
-
   const _ProductTile({
     required this.product,
     required this.cartStore,
   });
-
   @override
   Widget build(BuildContext context) {
     final cartItem = cartStore.cart.items
         .where((item) => item.productId == product.id)
         .firstOrNull;
-
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Padding(
@@ -118,9 +120,7 @@ class _ProductTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     "R\$ ${product.price.toStringAsFixed(2)}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -143,9 +143,7 @@ class _ProductTile extends StatelessWidget {
                       ),
                       Text(
                         cartItem.quantity.toString(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       IconButton(
                         onPressed: () {
