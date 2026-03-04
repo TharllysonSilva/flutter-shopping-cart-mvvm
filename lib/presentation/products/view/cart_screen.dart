@@ -128,7 +128,13 @@ class _OperationFeedback extends StatelessWidget {
             }
 
             if (result is Failure) {
-              return _ErrorBanner(message: result.error ?? "Erro no carrinho");
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                cmd.clear();
+              });
+
+              return _ErrorBanner(
+                message: result.error ?? "Erro no carrinho",
+              );
             }
 
             return const SizedBox.shrink();
@@ -165,9 +171,17 @@ class _ErrorBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       padding: const EdgeInsets.all(12),
-      color: Colors.red.withOpacity(0.1),
-      child: Text(message),
+      decoration: BoxDecoration(
+        color: Colors.red.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.red.withOpacity(0.3)),
+      ),
+      child: Text(
+        message,
+        style: const TextStyle(color: Colors.red),
+      ),
     );
   }
 }
@@ -198,6 +212,10 @@ class _CartSummaryAndCheckoutButton extends StatelessWidget {
           Text(
             "Subtotal: R\$ ${cart.subtotal.toStringAsFixed(2)}",
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          Text(
+            "Total: R\$ ${cart.subtotal.toStringAsFixed(2)}",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           const SizedBox(height: 12),
           ElevatedButton(
