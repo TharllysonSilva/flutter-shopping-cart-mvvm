@@ -72,9 +72,7 @@ lib/
 
 
 
-## Fluxo Arquitetural
-
-```text
+Fluxo Arquitetural
 View
   │
   ▼
@@ -91,7 +89,6 @@ Store (CartStore)
   │
   ▼
 UI Reactiva
-
 
 ---
 
