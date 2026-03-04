@@ -26,48 +26,26 @@ O projeto segue a arquitetura **MVVM recomendada pelo time do Flutter**, com cam
 
 ## Estrutura de Pastas
 
-
 lib/
-│
 ├── core/
-│ ├── command/
-│ ├── result/
-│ └── exceptions/
-│
+│   ├── command/
+│   ├── result/
+│   └── exceptions/
 ├── domain/
-│ └── entities/
-│ ├── product.dart
-│ ├── cart.dart
-│ ├── cart_item.dart
-│ └── order_summary.dart
-│
+│   └── entities/
 ├── data/
-│ ├── dto/
-│ ├── mappers/
-│ └── services/
-│ ├── products_api.dart
-│ ├── cart_api.dart
-│ └── checkout_api.dart
-│
+│   ├── dto/
+│   ├── mappers/
+│   └── services/
 ├── store/
-│ └── cart_store.dart
-│
+│   └── cart_store.dart
 ├── presentation/
-│ ├── products/
-│ │ ├── view/
-│ │ └── viewmodel/
-│ │
-│ ├── cart/
-│ │ └── view/
-│ │
-│ ├── checkout/
-│ │ └── view/
-│ │
-│ ├── widgets/
-│ └── routes/
-│
+│   ├── products/
+│   ├── cart/
+│   ├── checkout/
+│   ├── widgets/
+│   └── routes/
 └── main.dart
-
 
 ---
 
