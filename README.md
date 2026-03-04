@@ -26,6 +26,7 @@ O projeto segue a arquitetura **MVVM recomendada pelo time do Flutter**, com cam
 
 ## Estrutura de Pastas
 
+```text
 lib/
 ├── core/
 │   ├── command/
@@ -68,9 +69,13 @@ lib/
 
 ---
 
+
+Também precisa de bloco de código:
+
+```markdown
 ## Fluxo Arquitetural
 
-
+```text
 View
   │
   ▼
