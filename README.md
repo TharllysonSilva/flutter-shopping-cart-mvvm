@@ -67,13 +67,10 @@ lib/
 │
 └── main.dart
 
-```text
 ---
 
 
-Também precisa de bloco de código:
 
-```markdown
 ## Fluxo Arquitetural
 
 ```text
