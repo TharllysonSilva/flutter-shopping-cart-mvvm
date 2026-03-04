@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shopping_cart_mvvm/presentation/products/view/cart_screen.dart';
-import 'package:flutter_shopping_cart_mvvm/presentation/products/viewmodel/checkout_success_screen.dart';
+import 'package:flutter_shopping_cart_mvvm/presentation/routes/app_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_shopping_cart_mvvm/store/cart_store.dart';
@@ -30,10 +29,7 @@ Widget buildTestApp(Widget child) {
     ],
     child: MaterialApp(
       home: child,
-      routes: {
-        '/cart': (_) => const CartScreen(),
-        '/checkout-success': (_) => const CheckoutSuccessScreen(),
-      },
+      onGenerateRoute: AppRouter.onGenerateRoute,
     ),
   );
 }
