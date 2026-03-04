@@ -13,7 +13,6 @@ class ProductsApi {
   Future<Result<List<Product>>> fetchProducts() async {
     await Future.delayed(const Duration(seconds: 1));
 
-    // Simulação de erro randômico
     if (Random().nextBool()) {
       return const Failure("Erro ao carregar produtos.");
     }

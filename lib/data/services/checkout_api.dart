@@ -12,8 +12,8 @@ class CheckoutApi {
       return const Failure("Falha ao finalizar o pedido. Tente novamente.");
     }
 
-    // Frete simulado
-    final freight = (5 + Random().nextInt(16)).toDouble(); // 5..20
+  
+    final freight = (5 + Random().nextInt(16)).toDouble(); 
 
     final summary = OrderSummary(
       items: cart.items,
