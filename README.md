@@ -1,32 +1,32 @@
-# 🛒 flutter-shopping-cart-mvvm
+🛒 flutter-shopping-cart-mvvm
 
-Implementação de um fluxo completo de compra em Flutter utilizando **arquitetura MVVM**, com separação explícita entre domínio, infraestrutura e apresentação, aplicação dos padrões **Command/Result**, gerenciamento de estado via **ChangeNotifier**, navegação com **rotas nomeadas** e estado global desacoplado de serviços externos.
+Implementação de um fluxo completo de compra em Flutter utilizando arquitetura MVVM, com separação explícita entre domínio, infraestrutura e apresentação, aplicação dos padrões Command / Result, gerenciamento de estado via ChangeNotifier, navegação com rotas nomeadas e estado global desacoplado de serviços externos.
 
-O projeto foi desenvolvido com foco em **clareza arquitetural, previsibilidade de fluxo de dados, isolamento de responsabilidades e aderência aos requisitos técnicos do desafio**.
+O projeto foi desenvolvido com foco em clareza arquitetural, previsibilidade de fluxo de dados, isolamento de responsabilidades e aderência aos requisitos técnicos do desafio.
 
----
-
-# 🎯 Objetivo Arquitetural
+🎯 Objetivo Arquitetural
 
 Garantir uma arquitetura previsível e escalável baseada nos seguintes princípios:
 
-- Fonte única de verdade para o carrinho
-- Desacoplamento entre domínio e infraestrutura
-- Estados assíncronos explícitos
-- Separação clara entre Model, View e ViewModel
-- Isolamento de regras de negócio
-- Fluxo de dados unidirecional
-- Evolução incremental via commits por feature
+Fonte única de verdade para o carrinho
 
----
+Desacoplamento entre domínio e infraestrutura
 
-# 🏗 Arquitetura
+Estados assíncronos explícitos
 
-O projeto segue a arquitetura **MVVM recomendada pelo time do Flutter**, com camadas bem definidas e responsabilidades isoladas.
+Separação clara entre Model, View e ViewModel
 
-## Estrutura de Pastas
+Isolamento de regras de negócio
 
-```text
+Fluxo de dados unidirecional
+
+Evolução incremental via commits por feature
+
+🏗 Arquitetura
+
+O projeto segue a arquitetura MVVM recomendada pelo time do Flutter, com camadas bem definidas e responsabilidades isoladas.
+
+Estrutura de Pastas
 lib/
 ├── core/
 │   ├── command/
@@ -66,14 +66,7 @@ lib/
 │   └── routes/
 │
 └── main.dart
-
----
-
-
-
-## Fluxo Arquitetural
-
-```text
+🔁 Fluxo Arquitetural
 View
   │
   ▼
@@ -90,351 +83,315 @@ Store (CartStore)
   │
   ▼
 UI Reactiva
+1️⃣ Domain (Model)
 
+A camada de domínio contém entidades puras, independentes de qualquer tecnologia externa.
 
----
+Entidades
 
-# 1️⃣ Domain (Model)
+Product
 
-A camada de domínio contém **entidades puras**, independentes de qualquer tecnologia externa.
+Cart
 
-### Entidades implementadas
+CartItem
 
-- `Product`
-- `Cart`
-- `CartItem`
-- `OrderSummary`
+OrderSummary
 
-### Características do domínio
+Características do domínio
 
-- Sem dependência de Flutter
-- Sem dependência de HTTP
-- Sem serialização
-- Contém apenas **estado e regras derivadas**
+Sem dependência de Flutter
 
-### Exemplos de lógica no domínio
+Sem dependência de HTTP
 
-- `Cart.subtotal`
-- `Cart.totalItems`
-- `Cart.totalDifferentItems`
-- `OrderSummary.total`
+Sem serialização
 
-O domínio **não conhece infraestrutura**.
+Contém apenas estado e regras derivadas
 
----
+Exemplos de lógica
+Cart.subtotal
+Cart.totalItems
+Cart.totalDifferentItems
+OrderSummary.total
 
-# 2️⃣ Data Layer
+O domínio não conhece infraestrutura.
 
-Responsável por **integração externa e transformação de dados**.
+2️⃣ Data Layer
 
-## APIs
+Responsável por integração externa e transformação de dados.
 
-### ProductsApi
+APIs
+ProductsApi
 
 Consumo real da API:
 
-
 https://fakestoreapi.com/products
-
 
 Responsável por:
 
-- Requisição HTTP
-- Parsing JSON
-- Mapeamento DTO → Entity
+Requisição HTTP
 
----
+Parsing JSON
 
-### CartApi
+Mapeamento DTO → Entity
+
+CartApi
 
 Simulação de operações de carrinho.
 
 Características:
 
-- Latência artificial (`Future.delayed`)
-- Falha randômica simulada
-- Retorna `Result`
+Latência artificial (Future.delayed)
 
----
+Falha randômica simulada
 
-### CheckoutApi
+Retorno tipado com Result
+
+CheckoutApi
 
 Simula finalização do pedido.
 
-Comportamento:
+Características:
 
-- Delay artificial
-- Possibilidade de erro randômico
-- Retorno tipado com `Result`
+Delay artificial
 
----
+Possibilidade de erro randômico
 
-# 3️⃣ Store (Fonte Única de Verdade)
+Retorno tipado com Result
+
+3️⃣ Store (Fonte Única de Verdade)
 
 O estado global do carrinho é mantido por:
 
-
 CartStore
+Responsabilidades
 
+Manter estado global
 
-### Responsabilidades
+Aplicar regras de negócio
 
-- Manter estado global
-- Aplicar regras de negócio
-- Notificar UI via `ChangeNotifier`
-- Persistir estado em memória
-- Guardar último pedido finalizado
+Notificar UI via ChangeNotifier
 
-### Importante
+Persistir estado em memória
 
-- A Store **não conhece API**
-- A Store **não executa operações assíncronas**
-- A Store **não contém lógica de UI**
+Guardar último pedido finalizado
 
----
+Importante
 
-# 4️⃣ ViewModel
+A Store não conhece API
 
-Os ViewModels atuam como **orquestradores do fluxo da aplicação**.
+A Store não executa operações assíncronas
 
-### Responsabilidades
+A Store não contém lógica de UI
 
-- Chamar APIs
-- Aplicar validações
-- Atualizar a Store
-- Expor estado assíncrono para a UI
+4️⃣ ViewModel
 
-### ViewModels implementados
+Os ViewModels atuam como orquestradores do fluxo da aplicação.
 
-- `ProductsViewModel`
-- `CartViewModel`
-- `CheckoutViewModel`
+Responsabilidades
 
-Cada operação assíncrona é encapsulada em um:
+Chamar APIs
 
+Aplicar validações
+
+Atualizar a Store
+
+Expor estado assíncrono para a UI
+
+ViewModels implementados
+
+ProductsViewModel
+
+CartViewModel
+
+CheckoutViewModel
+
+Cada operação assíncrona é encapsulada em:
 
 Command<T>
-
-
----
-
-# 5️⃣ View
+5️⃣ View
 
 A camada de apresentação é responsável apenas por:
 
-- Renderização de UI
-- Reatividade
-- Navegação
-- Exibição de loading e erro
+Renderização de UI
 
-As Views **não contêm regras de negócio**.
+Reatividade
 
----
+Navegação
 
-# 🔁 Padrões Arquiteturais
+Exibição de loading e erro
 
-## Command Pattern
+As Views não contêm regras de negócio.
+
+🔁 Padrões Arquiteturais
+Command Pattern
 
 Encapsula operações assíncronas.
 
 Permite à View reagir a:
 
-- `isExecuting`
-- `result`
+isExecuting
+
+result
 
 Exemplo:
-
 
 loadProductsCommand
 cartOperationCommand
 checkoutCommand
-
-
----
-
-## Result Pattern
+Result Pattern
 
 Representa explicitamente o resultado das operações.
 
 Tipos disponíveis:
 
-
 Success<T>
 Failure<T>
+Benefícios
 
+Evita uso de exceções para controle de fluxo
 
-### Benefícios
+Torna estados explícitos
 
-- Evita uso de exceções para controle de fluxo
-- Torna estados explícitos
-- Facilita testes
+Facilita testes
 
----
+🛒 Regras de Negócio do Carrinho
 
-# 🛒 Regras de Negócio do Carrinho
+Implementadas na Store.
 
-Implementadas na **Store**.
+Regras
 
-### Regras
+1️⃣ Máximo de 10 produtos diferentes
 
-1. Máximo de **10 produtos diferentes**
-2. Carrinho **finalizado não pode ser editado**
-3. Operações sempre passam por **CartApi simulada**
+2️⃣ Carrinho finalizado não pode ser editado
 
----
+3️⃣ Operações sempre passam por CartApi simulada
 
-# 🌐 Integração com API
-
-## API Real
-
-
+🌐 Integração com API
+API Real
 https://fakestoreapi.com/products
-
 
 Utilizada apenas para:
 
-- Catálogo de produtos
+Catálogo de produtos
 
----
+APIs Simuladas
 
-## APIs Simuladas
+CartApi
 
-- `CartApi`
-- `CheckoutApi`
+CheckoutApi
 
 Simulam:
 
-- Latência
-- Erros randômicos
-- Operações de backend
+Latência
 
----
+Erros randômicos
 
-# 🚦 Fluxo de Compra
+Operações de backend
 
-1️⃣ Produtos carregados via HTTP  
-2️⃣ Usuário adiciona produto ao carrinho  
-3️⃣ View chama ViewModel  
-4️⃣ ViewModel chama CartApi  
-5️⃣ CartApi retorna `Result`  
-6️⃣ ViewModel atualiza Store  
-7️⃣ Store notifica UI  
-8️⃣ Checkout chama CheckoutApi  
+🚦 Fluxo de Compra
 
-9️⃣ Em sucesso:
+1️⃣ Produtos carregados via HTTP
+2️⃣ Usuário adiciona produto ao carrinho
+3️⃣ View chama ViewModel
+4️⃣ ViewModel chama CartApi
+5️⃣ CartApi retorna Result
+6️⃣ ViewModel atualiza Store
+7️⃣ Store notifica UI
+8️⃣ Checkout chama CheckoutApi
 
-- Carrinho é finalizado
-- Navegação limpa stack
+Em sucesso
+
+Carrinho é finalizado
+
+Navegação limpa stack
 
 🔟 Novo pedido reinicia estado global
 
----
-
-# 🧪 Testes
+🧪 Testes
 
 O projeto inclui três tipos de testes.
 
-## Testes Unitários
+Testes Unitários
 
 Validação de regras do domínio.
 
 Exemplo:
 
-
 cart_store_test.dart
-
 
 Valida:
 
-- limite de 10 produtos diferentes
+limite de 10 produtos diferentes
 
----
-
-## Testes de ViewModel
+Testes de ViewModel
 
 Validação de estados assíncronos.
 
 Exemplo:
 
-
 products_viewmodel_test.dart
 
+Cenários:
 
-Cenários testados:
+loading
 
-- loading
-- sucesso
-- erro
+sucesso
 
----
+erro
 
-## Testes de Integração
+Testes de Integração
 
 Validação de fluxo de UI.
 
 Exemplo:
 
-
 products_screen_test.dart
-
 
 Testa:
 
-- renderização da lista
-- navegação para carrinho
+renderização da lista
 
----
+navegação para carrinho
 
-# 📌 Aderência ao Desafio
+📌 Aderência ao Desafio
 
-✔ Arquitetura MVVM  
-✔ Separação clara de camadas  
-✔ ChangeNotifier  
-✔ Command Pattern  
-✔ Result Pattern  
-✔ Rotas nomeadas  
-✔ Estado global do carrinho  
-✔ Regras de negócio aplicadas  
-✔ API real para produtos  
-✔ APIs simuladas para carrinho e checkout  
-✔ Tratamento de erros na UI  
-✔ Commits organizados por feature  
+✔ Arquitetura MVVM
+✔ Separação clara de camadas
+✔ ChangeNotifier
+✔ Command Pattern
+✔ Result Pattern
+✔ Rotas nomeadas
+✔ Estado global do carrinho
+✔ Regras de negócio aplicadas
+✔ API real para produtos
+✔ APIs simuladas para carrinho e checkout
+✔ Tratamento de erros na UI
+✔ Commits organizados por feature
 
----
-
-# 🔧 Extensibilidade
+🔧 Extensibilidade
 
 A arquitetura permite evolução para:
 
-- UseCases na camada de domínio
-- Persistência local (Hive / Drift)
-- Injeção de dependência (GetIt / Riverpod)
-- Testes de integração mais robustos
-- Internacionalização
-- Modularização por feature
+UseCases na camada de domínio
 
----
+Persistência local (Hive / Drift)
 
-# 📦 Requisitos
+Injeção de dependência (GetIt / Riverpod)
 
+Testes de integração mais robustos
 
+Internacionalização
+
+Modularização por feature
+
+📦 Requisitos
 Flutter 3.x
 Dart 3.x
-
-
-### Dependências principais
-
-
+Dependências principais
 provider
 http
 mocktail
 flutter_test
-
-
----
-
-# ▶ Execução
-
-```bash
+▶ Execução
 flutter pub get
 flutter run
