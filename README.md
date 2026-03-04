@@ -31,42 +31,61 @@ lib/
 │   ├── command/
 │   ├── result/
 │   └── exceptions/
+│
 ├── domain/
 │   └── entities/
+│       ├── product.dart
+│       ├── cart.dart
+│       ├── cart_item.dart
+│       └── order_summary.dart
+│
 ├── data/
 │   ├── dto/
 │   ├── mappers/
 │   └── services/
+│       ├── products_api.dart
+│       ├── cart_api.dart
+│       └── checkout_api.dart
+│
 ├── store/
 │   └── cart_store.dart
+│
 ├── presentation/
 │   ├── products/
+│   │   ├── view/
+│   │   └── viewmodel/
+│   │
 │   ├── cart/
+│   │   └── view/
+│   │
 │   ├── checkout/
+│   │   └── view/
+│   │
 │   ├── widgets/
 │   └── routes/
+│
 └── main.dart
 
 ---
 
-# 📐 Fluxo Arquitetural
+## Fluxo Arquitetural
 
 
 View
-│
-▼
+  │
+  ▼
 ViewModel
-│
-▼
+  │
+  ▼
 Service (API)
-│
-▼
+  │
+  ▼
 Result (Success / Failure)
-│
-▼
+  │
+  ▼
 Store (CartStore)
-│
-▼
+  │
+  ▼
 UI Reactiva
 
 
