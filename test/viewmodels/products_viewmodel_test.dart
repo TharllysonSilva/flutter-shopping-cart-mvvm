@@ -28,7 +28,7 @@ void main() {
     viewModel = ProductsViewModel(api);
   });
 
-  test('loadProducts should return Success when API succeeds', () async {
+  test('loadProducts should transition from loading to success', () async {
     when(() => api.fetchProducts()).thenAnswer(
       (_) async => const Success([
         Product(
@@ -40,23 +40,33 @@ void main() {
       ]),
     );
 
-    await viewModel.loadProducts();
+    final future = viewModel.loadProducts();
+
+    expect(viewModel.loadProductsCommand.isExecuting, true);
+
+    await future;
 
     final result = viewModel.loadProductsCommand.result;
 
+    expect(viewModel.loadProductsCommand.isExecuting, false);
     expect(result, isA<Success>());
     expect((result as Success).data.length, 1);
   });
 
-  test('loadProducts should return Failure when API fails', () async {
+  test('loadProducts should transition from loading to failure', () async {
     when(() => api.fetchProducts()).thenAnswer(
       (_) async => const Failure('Erro ao buscar produtos'),
     );
 
-    await viewModel.loadProducts();
+    final future = viewModel.loadProducts();
+
+    expect(viewModel.loadProductsCommand.isExecuting, true);
+
+    await future;
 
     final result = viewModel.loadProductsCommand.result;
 
+    expect(viewModel.loadProductsCommand.isExecuting, false);
     expect(result, isA<Failure>());
   });
 }

@@ -31,7 +31,6 @@ void main() {
     store = CartStore();
     viewModel = CartViewModel(api, store);
 
-    /// Simula comportamento real da API
     when(() => api.addProduct(
           current: any(named: 'current'),
           product: any(named: 'product'),
@@ -98,7 +97,6 @@ void main() {
       ),
     );
 
-    /// regra: máximo 10 produtos diferentes
     expect(store.cart.totalDifferentItems, 10);
   });
 }
