@@ -67,12 +67,14 @@ lib/
 │   └── routes/
 │
 └── main.dart
+```
 
 ---
 
 
 
 Fluxo Arquitetural
+```text
 View
   │
   ▼
@@ -89,6 +91,7 @@ Store (CartStore)
   │
   ▼
 UI Reactiva
+```
 
 ---
 
