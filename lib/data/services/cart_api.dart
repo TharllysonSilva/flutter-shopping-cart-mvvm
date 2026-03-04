@@ -54,7 +54,7 @@ class CartApi {
   Future<Result<Cart>> changeQuantity({
     required Cart current,
     required int productId,
-    required int delta, // +1 ou -1
+    required int delta,
   }) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
