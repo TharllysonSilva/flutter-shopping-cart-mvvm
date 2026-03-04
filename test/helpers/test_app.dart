@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shopping_cart_mvvm/presentation/routes/app_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_shopping_cart_mvvm/store/cart_store.dart';
@@ -26,6 +27,9 @@ Widget buildTestApp(Widget child) {
         ),
       ),
     ],
-    child: MaterialApp(home: child),
+    child: MaterialApp(
+      home: child,
+      onGenerateRoute: AppRouter.onGenerateRoute,
+    ),
   );
 }
